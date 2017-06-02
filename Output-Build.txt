@@ -1,0 +1,3 @@
+﻿1>------ Build started: Project: mzAccess, Configuration: Debug Any CPU ------
+1>  mzAccess -> D:\FT Data\mzAccess\WebService\WebService\bin\mzAccess.dll
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

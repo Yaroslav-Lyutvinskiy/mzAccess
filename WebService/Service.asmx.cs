@@ -29,7 +29,8 @@ namespace mzAccess
     /// <summary>
     /// Summary description for WebServiceSample
     /// </summary>
-    [WebService(Namespace = "http://mzaccess.org/",
+    [WebService(Namespace = "http://mzaccess.org/DataService",
+    //[WebService(Namespace = "http://tempuri.org/",
         Description = "<h3>Service provides access to mass spectrometry raw data. <br/> Look for detailed documentation to <a href = \"http://mzaccess.org/\">mzAccess.org</a> </h3>")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]

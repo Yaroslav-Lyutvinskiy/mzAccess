@@ -128,7 +128,14 @@ namespace mzAccess
                                 DirCaches.Add(JCache);
                                 List<RCHEntry> Ents = JCache.Files;
                                 foreach(RCHEntry Ent in Ents) {
-                                    RCHCache.Add(Ent.FileName, Ent);
+                                    try { //!!Duplicated files in cache!
+                                        RCHCache.Add(Ent.FileName, Ent);
+                                    }
+                                    catch (Exception e){
+                                        MSDataService.Log("TraverseTree: "+e.Message);
+                                        continue;
+                                    }
+
                                 }
                             }
                         }

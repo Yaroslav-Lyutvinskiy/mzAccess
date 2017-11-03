@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://mzaccess.org/DataService" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://mzaccess.org/DataService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Service provides access to mass spectrometry raw data. &lt;br/&gt; Look for detailed documentation to &lt;a href = "http://mzaccess.org/"&gt;mzAccess.org&lt;/a&gt; &lt;/h3&gt;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://mzaccess.org/DataService">
+      <s:element name="GetChromatogram">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetChromatogramResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetChromatogramResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDouble">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="double" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetSpectrumByScanNumber">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="ScanNumber" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpectrumByScanNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSpectrumByScanNumberResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpectrumByRT">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RT" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpectrumByRTResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSpectrumByRTResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetScanNumberFromRT">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="RT" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetScanNumberFromRTResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetScanNumberFromRTResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRTFromScanNumber">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="ScanNumber" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRTFromScanNumberResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetRTFromScanNumberResult" type="s:double" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAverageSpectrum">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAverageSpectrumResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAverageSpectrumResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetArea">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAreaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAreaResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFragmentationEvents">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MZHigh" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTLow" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="RTHigh" type="s:double" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFragmentationEventsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetFragmentationEventsResult" type="tns:ArrayOfFragmentationInfo" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFragmentationInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FragmentationInfo" nillable="true" type="tns:FragmentationInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FragmentationInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="RT" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="ParentMZ" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="ScanNumber" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="MSOrder" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMZRange">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMZRangeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMZRangeResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRTRange">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRTRangeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRTRangeResult" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FileList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileMask" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FileListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileListResult" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetChromatogramArray">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileNames" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetChromatogramArrayResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetChromatogramArrayResult" type="tns:ArrayOfArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfArrayOfDouble">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfDouble" nillable="true" type="tns:ArrayOfDouble" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetSpectrumArray">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileNames" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpectrumArrayResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSpectrumArrayResult" type="tns:ArrayOfArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAreaArray">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileNames" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="MZHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTLow" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="RTHigh" type="tns:ArrayOfDouble" />
+            <s:element minOccurs="1" maxOccurs="1" name="Cache" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="Profile" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAreaArrayResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAreaArrayResult" type="tns:ArrayOfArrayOfDouble" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ServiceRescan">
+        <s:complexType />
+      </s:element>
+      <s:element name="ServiceRescanResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ServiceRescanResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetChromatogramSoapIn">
+    <wsdl:part name="parameters" element="tns:GetChromatogram" />
+  </wsdl:message>
+  <wsdl:message name="GetChromatogramSoapOut">
+    <wsdl:part name="parameters" element="tns:GetChromatogramResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumByScanNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSpectrumByScanNumber" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumByScanNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSpectrumByScanNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumByRTSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSpectrumByRT" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumByRTSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSpectrumByRTResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetScanNumberFromRTSoapIn">
+    <wsdl:part name="parameters" element="tns:GetScanNumberFromRT" />
+  </wsdl:message>
+  <wsdl:message name="GetScanNumberFromRTSoapOut">
+    <wsdl:part name="parameters" element="tns:GetScanNumberFromRTResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRTFromScanNumberSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRTFromScanNumber" />
+  </wsdl:message>
+  <wsdl:message name="GetRTFromScanNumberSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRTFromScanNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAverageSpectrumSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAverageSpectrum" />
+  </wsdl:message>
+  <wsdl:message name="GetAverageSpectrumSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAverageSpectrumResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAreaSoapIn">
+    <wsdl:part name="parameters" element="tns:GetArea" />
+  </wsdl:message>
+  <wsdl:message name="GetAreaSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAreaResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFragmentationEventsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFragmentationEvents" />
+  </wsdl:message>
+  <wsdl:message name="GetFragmentationEventsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFragmentationEventsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMZRangeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMZRange" />
+  </wsdl:message>
+  <wsdl:message name="GetMZRangeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMZRangeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRTRangeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRTRange" />
+  </wsdl:message>
+  <wsdl:message name="GetRTRangeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRTRangeResponse" />
+  </wsdl:message>
+  <wsdl:message name="FileListSoapIn">
+    <wsdl:part name="parameters" element="tns:FileList" />
+  </wsdl:message>
+  <wsdl:message name="FileListSoapOut">
+    <wsdl:part name="parameters" element="tns:FileListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetChromatogramArraySoapIn">
+    <wsdl:part name="parameters" element="tns:GetChromatogramArray" />
+  </wsdl:message>
+  <wsdl:message name="GetChromatogramArraySoapOut">
+    <wsdl:part name="parameters" element="tns:GetChromatogramArrayResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumArraySoapIn">
+    <wsdl:part name="parameters" element="tns:GetSpectrumArray" />
+  </wsdl:message>
+  <wsdl:message name="GetSpectrumArraySoapOut">
+    <wsdl:part name="parameters" element="tns:GetSpectrumArrayResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAreaArraySoapIn">
+    <wsdl:part name="parameters" element="tns:GetAreaArray" />
+  </wsdl:message>
+  <wsdl:message name="GetAreaArraySoapOut">
+    <wsdl:part name="parameters" element="tns:GetAreaArrayResponse" />
+  </wsdl:message>
+  <wsdl:message name="ServiceRescanSoapIn">
+    <wsdl:part name="parameters" element="tns:ServiceRescan" />
+  </wsdl:message>
+  <wsdl:message name="ServiceRescanSoapOut">
+    <wsdl:part name="parameters" element="tns:ServiceRescanResponse" />
+  </wsdl:message>
+  <wsdl:portType name="MSDataServiceSoap">
+    <wsdl:operation name="GetChromatogram">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a chromatogram for the specified MZ-RT area.</wsdl:documentation>
+      <wsdl:input message="tns:GetChromatogramSoapIn" />
+      <wsdl:output message="tns:GetChromatogramSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByScanNumber">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a spectrum identified by the ScanNumber parameter</wsdl:documentation>
+      <wsdl:input message="tns:GetSpectrumByScanNumberSoapIn" />
+      <wsdl:output message="tns:GetSpectrumByScanNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByRT">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets Mass/Intensity pairs for particular MSOnly spectra identified by Retention Time.</wsdl:documentation>
+      <wsdl:input message="tns:GetSpectrumByRTSoapIn" />
+      <wsdl:output message="tns:GetSpectrumByRTSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetScanNumberFromRT">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets scan number for of nearest MS1 spectrum with less or equal retention time.</wsdl:documentation>
+      <wsdl:input message="tns:GetScanNumberFromRTSoapIn" />
+      <wsdl:output message="tns:GetScanNumberFromRTSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRTFromScanNumber">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets exact retention time for particular scan number.</wsdl:documentation>
+      <wsdl:input message="tns:GetRTFromScanNumberSoapIn" />
+      <wsdl:output message="tns:GetRTFromScanNumberSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAverageSpectrum">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets Mass/Intensity pairs for averaged (summed) spectra for Retention Time range</wsdl:documentation>
+      <wsdl:input message="tns:GetAverageSpectrumSoapIn" />
+      <wsdl:output message="tns:GetAverageSpectrumSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetArea">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets all intensity data for the specified MZ-RT area.</wsdl:documentation>
+      <wsdl:input message="tns:GetAreaSoapIn" />
+      <wsdl:output message="tns:GetAreaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFragmentationEvents">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Describe fragmentation events, which occur in requested LC-MS area.</wsdl:documentation>
+      <wsdl:input message="tns:GetFragmentationEventsSoapIn" />
+      <wsdl:output message="tns:GetFragmentationEventsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMZRange">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get full mass range for specified file name.</wsdl:documentation>
+      <wsdl:input message="tns:GetMZRangeSoapIn" />
+      <wsdl:output message="tns:GetMZRangeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRTRange">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get full retention time range for specified file name</wsdl:documentation>
+      <wsdl:input message="tns:GetRTRangeSoapIn" />
+      <wsdl:output message="tns:GetRTRangeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="FileList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">List files available with a service. Use dos-style asterisk templates</wsdl:documentation>
+      <wsdl:input message="tns:FileListSoapIn" />
+      <wsdl:output message="tns:FileListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChromatogramArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Batch analog of GetChromatogram function. Gets Retention time/Intensity pairs for particular parameter sets</wsdl:documentation>
+      <wsdl:input message="tns:GetChromatogramArraySoapIn" />
+      <wsdl:output message="tns:GetChromatogramArraySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Batch analog of GetAverageSpectrum function.</wsdl:documentation>
+      <wsdl:input message="tns:GetSpectrumArraySoapIn" />
+      <wsdl:output message="tns:GetSpectrumArraySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAreaArray">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Batch analog of GetArea function.</wsdl:documentation>
+      <wsdl:input message="tns:GetAreaArraySoapIn" />
+      <wsdl:output message="tns:GetAreaArraySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ServiceRescan">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Forces service to rescan directories to actualize list of files accessible with a service</wsdl:documentation>
+      <wsdl:input message="tns:ServiceRescanSoapIn" />
+      <wsdl:output message="tns:ServiceRescanSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MSDataServiceSoap" type="tns:MSDataServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetChromatogram">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetChromatogram" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByScanNumber">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetSpectrumByScanNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByRT">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetSpectrumByRT" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetScanNumberFromRT">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetScanNumberFromRT" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRTFromScanNumber">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetRTFromScanNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAverageSpectrum">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetAverageSpectrum" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArea">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetArea" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFragmentationEvents">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetFragmentationEvents" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMZRange">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetMZRange" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRTRange">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetRTRange" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FileList">
+      <soap:operation soapAction="http://mzaccess.org/DataService/FileList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChromatogramArray">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetChromatogramArray" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumArray">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetSpectrumArray" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAreaArray">
+      <soap:operation soapAction="http://mzaccess.org/DataService/GetAreaArray" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServiceRescan">
+      <soap:operation soapAction="http://mzaccess.org/DataService/ServiceRescan" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="MSDataServiceSoap12" type="tns:MSDataServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetChromatogram">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetChromatogram" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByScanNumber">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetSpectrumByScanNumber" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumByRT">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetSpectrumByRT" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetScanNumberFromRT">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetScanNumberFromRT" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRTFromScanNumber">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetRTFromScanNumber" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAverageSpectrum">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetAverageSpectrum" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArea">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetArea" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFragmentationEvents">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetFragmentationEvents" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMZRange">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetMZRange" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRTRange">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetRTRange" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FileList">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/FileList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChromatogramArray">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetChromatogramArray" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpectrumArray">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetSpectrumArray" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAreaArray">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/GetAreaArray" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServiceRescan">
+      <soap12:operation soapAction="http://mzaccess.org/DataService/ServiceRescan" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MSDataService">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Service provides access to mass spectrometry raw data. &lt;br/&gt; Look for detailed documentation to &lt;a href = "http://mzaccess.org/"&gt;mzAccess.org&lt;/a&gt; &lt;/h3&gt;</wsdl:documentation>
+    <wsdl:port name="MSDataServiceSoap" binding="tns:MSDataServiceSoap">
+      <soap:address location="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="MSDataServiceSoap12" binding="tns:MSDataServiceSoap12">
+      <soap12:address location="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

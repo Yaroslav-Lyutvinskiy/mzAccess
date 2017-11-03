@@ -17,6 +17,7 @@
  *******************************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 namespace mzAccess {
 
@@ -60,4 +61,47 @@ namespace mzAccess {
         double[] GetRTRange();
         void CloseFile();
     }
+
+    public class UtilityFunctions {
+        //Clean list out of sequencial zeroes (used for chromatograms)
+        //if necessary (SizeZeroes==true) it can add leading and trailing zeroes to array at Low and High mass points 
+        static public int ClearZeroes(List<double> DList, double Low, double High, bool SizeZeroes) {
+            if(SizeZeroes) {
+                if(DList[0] > Low && DList[1] == 0.0) {
+                    DList.Insert(0, Low);
+                    DList.Insert(1, 0.0);
+                }
+                if(DList[DList.Count - 2] < High && DList[DList.Count - 1] == 0.0) {
+                    DList.Add(High);
+                    DList.Add(0.0);
+                }
+            }
+            for(int i = DList.Count - 4 ; i > 0 ; i -= 2) {
+                if(DList[i + 1] == 0.0 && DList[i - 1] == 0.0 && DList[i + 3] == 0.0) {
+                    DList.RemoveAt(i + 1);
+                    DList.RemoveAt(i);
+                }
+            }
+            return DList.Count;
+        }
+    }
+
+    //Exception arise when parsing of files or when Vendors API calls are unsuccessful 
+    public class RawFileException : Exception {
+        public RawFileException(string Message) : base(Message) {
+        }
+    }
+
+    //Exception arise certain (profile or centroided) data is anavialble in cache or raw files 
+    public class DataUnavailableException : Exception {
+        public DataUnavailableException(string Message) : base(Message) {
+        }
+    }
+
+    //Exception arise when raw files contains data which not supported by current mzAccess like multiple precursors
+    public class UnsupportedFeatureException : Exception {
+        public UnsupportedFeatureException(string Message) : base(Message) {
+        }
+    }
+
 }

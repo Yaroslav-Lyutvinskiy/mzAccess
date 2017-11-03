@@ -32,7 +32,6 @@ namespace mzAccess {
 
         public SortedList<int, double> RTs = new SortedList<int, double>();
 
-
         protected double MinMZ;
         protected double MaxMZ;
         protected double MinRT;
@@ -62,7 +61,7 @@ namespace mzAccess {
 
         //cannot be implemented on RCH files
         public double[] GetAveSpectrum(double MZLow, double MZHigh, double StartRT, double EndRT, bool Profile = false) {
-            return null;
+            throw new UnsupportedFeatureException("Cache does not support averaging of spectra");
         }
 
         public double[] GetMassRange() {
@@ -70,6 +69,8 @@ namespace mzAccess {
         }
 
         public double GetRTFromScanNumber(int ScanNumber) {
+            if(RTs.Count == 0)
+                throw new DataUnavailableException("There is no data in cache file. Probably, centroid data was not available when caching");
             return RTs.Last(r => r.Key <= ScanNumber).Value;
         }
 
@@ -78,6 +79,8 @@ namespace mzAccess {
         }
 
         public int GetScanNumberFromRT(double RT) {
+            if(RTs.Count == 0)
+                throw new DataUnavailableException("There is no data in cache file. Probably, centroid data was not available when cacheing");
             if (RTs.Values[RTs.Count-1] < RT) {
                 return RTs.Keys[RTs.Count - 1];
             } else {
@@ -91,7 +94,7 @@ namespace mzAccess {
         public double[] GetSpectrum(double MZLow, double MZHigh, int ScanNumber, bool Profile = false) {
             double RT = GetRTFromScanNumber(ScanNumber);
             if (GetScanNumberFromRT(RT) != ScanNumber) {
-                throw (new ArgumentException("GetSpectrumbyScanNumber exception; There is no MSMS in cach, Use Cache = False"));
+                throw (new DataUnavailableException("There is no MSMS in cach, Use Cache = False"));
             }
             List<DataPoint> Points = GetPoints(MZLow, MZHigh, RT, RT);
             double[] Res = new double[Points.Count * 2];

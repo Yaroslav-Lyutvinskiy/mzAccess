@@ -78,6 +78,8 @@ namespace mzAccess {
         protected static List<RawEntry> ThermoActives = new List<RawEntry>();
         //List contains all activated agilent files where File represent active reference to agilent file
         protected static List<RawEntry> AgilentActives = new List<RawEntry>();
+        //List contains all activated mzML files where File represent active reference to mzML file
+        protected static List<RawEntry> mzMLActives = new List<RawEntry>();
 
 
         public override IMSFile MSFile{
@@ -115,6 +117,20 @@ namespace mzAccess {
                             AgilentActives.Remove(toClose);
                         }
                     }
+                    if(FullPath.ToUpper().Contains(".MZML")) {
+                        //if limit of open files is reached - before activation of new file 
+                        //most old files is to be deactivated - here for agilent files
+                        while(Global.Settings.mzMLFiles > 0 && mzMLActives.Count >= Global.Settings.mzMLFiles) {
+                            DateTime Last = DateTime.Now;
+                            RawEntry toClose = null;
+                            foreach(RawEntry R in mzMLActives) {
+                                if(R.LastUsed < Last)
+                                    toClose = R;
+                            }
+                            toClose.Close();
+                            mzMLActives.Remove(toClose);
+                        }
+                    }
                 }
                 //actual data access objects creation
                 if(FullPath.ToUpper().Contains(".RAW")) {
@@ -126,6 +142,11 @@ namespace mzAccess {
                     AgilentMSFile AF = new AgilentMSFile(FullPath);
                     File_ = AF;
                     AgilentActives.Add(this);
+                }
+                if(FullPath.ToUpper().Contains(".MZML")) {
+                    mzMLFile MF = new mzMLFile(FullPath);
+                    File_ = MF;
+                    mzMLActives.Add(this);
                 }
                 return File_;
             }
@@ -152,6 +173,15 @@ namespace mzAccess {
                         R.Unlock();
                     }
                 }
+                for(int i = mzMLActives.Count-1 ; i >= 0 ; i-- ) {
+                    if(Global.Settings.FileTimeOut > 0 && (DateTime.Now - mzMLActives[i].LastUsed).TotalMinutes > Global.Settings.FileTimeOut) {
+                        RawEntry R = mzMLActives[i];
+                        R.Lock();
+                        R.Close();
+                        mzMLActives.RemoveAt(i);
+                        R.Unlock();
+                    }
+                }
             }
         }
 
@@ -165,6 +195,10 @@ namespace mzAccess {
                 T.Close();
             }
             ThermoActives.Clear();
+            foreach(RawEntry T in mzMLActives) {
+                T.Close();
+            }
+            mzMLActives.Clear();
         }
              
     }

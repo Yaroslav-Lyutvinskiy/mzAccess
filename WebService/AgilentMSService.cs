@@ -161,7 +161,7 @@ namespace mzAccess
                     SData.Add(Specs[i].XArray[j]);
                     SData.Add(Specs[i].YArray[j]);
                 }
-                ClearZeroes(SData, MZLow, MZHigh, Profile);
+                UtilityFunctions.ClearZeroes(SData, MZLow, MZHigh, Profile);
                 Cleaned.Add(SData);
             }
             //number of spectra
@@ -272,29 +272,6 @@ namespace mzAccess
             }
             return Res;
         }
-
-        //Clean list out of sequencial zeroes (used for chromatograms)
-        //if necessary (SizeZeroes==true) it can add leading and trailing zeroes to array at Low and High mass points 
-        static public int ClearZeroes(List<double> DList, double Low, double High, bool SizeZeroes){
-            if (SizeZeroes){
-                if(DList[0]>Low && DList[1] == 0.0){
-                    DList.Insert(0, Low);
-                    DList.Insert(1, 0.0);
-                }
-                if(DList[DList.Count-2]<High && DList[DList.Count-1] == 0.0){
-                    DList.Add(High);
-                    DList.Add(0.0);
-                }
-            }
-            for (int i=DList.Count - 2 ; i > 0 ; i-=2){
-                if (DList[i+1] == 0.0 && DList[i - 1] == 0.0 && DList[i + 3] == 0.0) {
-                    DList.RemoveAt(i+1);
-                    DList.RemoveAt(i);
-                }
-            }
-            return DList.Count;
-        }
-
 
     }
 

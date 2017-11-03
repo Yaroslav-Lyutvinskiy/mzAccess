@@ -35,8 +35,10 @@ namespace mzAccess
         public class Settings {
             static public int ThermoFiles=0;
             static public int AgilentFiles = 0;
+            static public int mzMLFiles = 0;
             static public bool ThermoEnabled = true;
             static public bool AgilentEnabled = true;
+            static public bool mzMLEnabled = true;
             static public bool CacheEnabled = true;
             static public int RCHFiles = 0;
             static public int FileTimeOut = 120;
@@ -46,6 +48,8 @@ namespace mzAccess
                 ThermoEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["ThermoEnabled"]);
                 AgilentFiles = Convert.ToInt32(ConfigurationManager.AppSettings["AgilentFiles"]);
                 AgilentEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["AgilentEnabled"]);
+                mzMLFiles = Convert.ToInt32(ConfigurationManager.AppSettings["mzMLFiles"]);
+                mzMLEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["mzMLEnabled"]);
                 RCHFiles = Convert.ToInt32(ConfigurationManager.AppSettings["RCHFiles"]);
                 CacheEnabled = Convert.ToBoolean(ConfigurationManager.AppSettings["CacheEnabled"]);
                 FileTimeOut = Convert.ToInt32(ConfigurationManager.AppSettings["FileTimeOut"]);
@@ -77,8 +81,10 @@ namespace mzAccess
             Stack<string> dirs = new Stack<string>(20);
 
             if (!ZlpIOHelper.DirectoryExists(root)){
-                throw new ArgumentException();
+                MSDataService.Log(String.Format("TraverseTree- No Root \"{0}\" Directory Exists.",root));
+                return;
             }
+
             dirs.Push(root);
             while (dirs.Count > 0){
                 string currentDir = dirs.Pop();
@@ -105,7 +111,8 @@ namespace mzAccess
                     try{
                         // .raw files for thermo files
                         string Ext = file.Extension;
-                        if(Ext == ".raw") {
+                        if( (Ext.ToUpper() == ".RAW"    && Settings.ThermoEnabled) || 
+                            (Ext.ToUpper() == ".MZML"   && Settings.mzMLEnabled) ) {
                             if(Settings.ThermoEnabled) {
                                 RawEntry FC = new RawEntry(file.FullName);
                                 try {

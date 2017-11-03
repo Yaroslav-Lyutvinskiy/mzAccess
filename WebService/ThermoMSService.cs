@@ -114,6 +114,11 @@ namespace mzAccess
             int Centroided = Profile ? 0 : 1;
             List<double> ResList = new List<double>();
             if (Profile){
+                int isProfile = 0;
+                (RawFile as IXRawfile2).IsProfileScanForScanNum(ScanNumber, ref isProfile);
+                if (isProfile == 0) {
+                    throw (new DataUnavailableException(String.Format("Profile data is not available for file: {1} Scan {0} ", ScanNumber, FileName)));
+                }
                 string MassRange = String.Format("{0:F3}-{1:F3}",MZLow,MZHigh); //"430.90-430.95";
                 (RawFile as IXRawfile3).GetMassListRangeFromScanNum(
                     ref ScanNumber, null, 0, 0, 0, Centroided, ref PeakWidth,ref MassData , ref PeakFlags, MassRange, ref ArraySize);
@@ -168,7 +173,7 @@ namespace mzAccess
             }
             if (!Profile){
                 //There is also (RawFile as IXRawfile4).GetAveragedLabelData function but I failed to make proper marshaling 
-                //int* pnScanNumbers argument has been recognized as ref int where atually it is int[] 
+                //int* pnScanNumbers argument has been recognized as ref int where actually it is int[] 
                 //changing Interop assembly does not help - it continues marshaling 8 bytes of pointer instead of marshaling array by value
                 //therefore I have here some custom implementation of peak centroiding
                 List<double> Centroids = Centroid(ResList);
@@ -214,7 +219,7 @@ namespace mzAccess
                     int isProfile = 0;
                     (RawFile as IXRawfile2).IsProfileScanForScanNum(i, ref isProfile);
                     if (isProfile == 0) {
-                        throw (new Exception(String.Format("Profile data is not available for scan {0}", i)));
+                        throw (new DataUnavailableException(String.Format("Profile data is not available for file: {1} Scan {0} ", i, FileName)));
                     }
                     (RawFile as IXRawfile3).GetMassListRangeFromScanNum(
                         ref i, null, 0, 0, 0, Centroided, ref PeakWidth,ref MassData , ref PeakFlags, MassRange, ref ArraySize);

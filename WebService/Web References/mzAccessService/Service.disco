@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx?wsdl" docRef="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" xmlns:q1="http://mzaccess.org/DataService" binding="q1:MSDataServiceSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" xmlns:q2="http://mzaccess.org/DataService" binding="q2:MSDataServiceSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

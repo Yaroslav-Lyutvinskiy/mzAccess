@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="mzAccess.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="mzAccess_mzAccessService_MSDataService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

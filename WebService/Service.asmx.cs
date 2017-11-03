@@ -21,8 +21,8 @@ using System.Web.Services;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
-
 
 namespace mzAccess
 {
@@ -65,15 +65,18 @@ namespace mzAccess
             catch(KeyNotFoundException){
                 //if error then return Error message with out ErrorMessage parameter
                 ErrorMessage = String.Format("GetChromatogram file exception; File not found {0}",FileName);;
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetChromatogram uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Cache - {7} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, RTLow, RTHigh, Cache );
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetChromatogram");
+                } else {
+                    ErrorMessage = String.Format("GetChromatogram uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Cache - {7} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RTLow, RTHigh, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = @"Gets a spectrum identified by the ScanNumber parameter")]
@@ -81,7 +84,7 @@ namespace mzAccess
         public double[] GetSpectrumByScanNumber(string FileName, double MZLow, double MZHigh, int ScanNumber, out string ErrorMessage, bool Cache = false, bool Profile = false){
             try{
                 if (Cache && Profile) {
-                    Cache = false;
+                    throw (new DataUnavailableException("There is no profile data in cache."));
                 }
                 FileName = Path.GetFileNameWithoutExtension(FileName);
                 Entry Cached = Cache ? Global.RCHCache[FileName] : Global.FileCashe[FileName];
@@ -99,19 +102,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetSpectrumbyScanNumber file exception; File not found {0}",FileName);
-                return null;
-            }
-            catch(ArgumentException e){
-                ErrorMessage = e.Message;
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetSpectrumbyScanNumber uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, ScanNumber - {5}, Cache - {6}, Profile - {7} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, ScanNumber, Cache, Profile );
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetSpectrumByScanNumber");
+                } else {
+                    ErrorMessage = String.Format("GetSpectrumbyScanNumber uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, ScanNumber - {5}, Cache - {6}, Profile - {7} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, ScanNumber, Cache, Profile);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = @"Gets Mass/Intensity pairs for particular MSOnly spectra identified by Retention Time.")]
@@ -119,7 +121,7 @@ namespace mzAccess
         public double[] GetSpectrumByRT(string FileName, double MZLow, double MZHigh, double RT, out string ErrorMessage, bool Cache = false, bool Profile = false){
             try{
                 if (Cache && Profile) {
-                    Cache = false;
+                    throw (new DataUnavailableException("There is no profile data in cache."));
                 }
                 FileName = Path.GetFileNameWithoutExtension(FileName);
                 Entry Cached = Cache ? Global.RCHCache[FileName] : Global.FileCashe[FileName];
@@ -138,15 +140,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetSpectrumbyRT file exception; File not found {0}",FileName);
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetSpectrumbyRT uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RT - {5:f3}, Cache - {6}, Profile - {7} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, RT, Cache, Profile );
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetSpectrumByRT");
+                } else {
+                    ErrorMessage = String.Format("GetSpectrumbyRT uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RT - {5:f3}, Cache - {6}, Profile - {7} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RT, Cache, Profile);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = @"Gets scan number for of nearest MS1 spectrum with less or equal retention time.")]
@@ -168,15 +173,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetScanNumberFromRT file exception; File not found {0}",FileName);
-                return -1;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetScanNumberFromRT uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", RT - {3:f3}, Cache - {4}",
-                    e.Message, e.StackTrace, FileName, RT, Cache );
-                Log(ErrorMessage);
-                return -1;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetScanNumberFromRT");
+                } else {
+                    ErrorMessage = String.Format("GetScanNumberFromRT uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", RT - {3:f3}, Cache - {4}",
+                        e.Message, e.StackTrace, FileName, RT, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return -1;
         }
             
         [WebMethod(Description = @"Gets exact retention time for particular scan number.")]
@@ -197,15 +205,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetScanNumberFromRT file exception; File not found {0}",FileName);
-                return -1.0;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetScanNumberFromRT uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", ScanNumber - {3}, Cache - {4} ",
-                    e.Message,e.StackTrace,FileName, ScanNumber, Cache);
-                Log(ErrorMessage);
-                return -1.0;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetRTFromScanNumber");
+                } else {
+                    ErrorMessage = String.Format("GetScanNumberFromRT uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", ScanNumber - {3}, Cache - {4} ",
+                        e.Message, e.StackTrace, FileName, ScanNumber, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return -1.0;
         }
 
         [WebMethod(Description = @"Gets Mass/Intensity pairs for averaged (summed) spectra for Retention Time range")]
@@ -227,22 +238,25 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetAverageSpectrum file exception; File not found {0}",FileName);;
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetAverageSpectrum uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Profile - {7} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, RTLow, RTHigh, Profile );
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetAverageSpectrum");
+                } else {
+                    ErrorMessage = String.Format("GetAverageSpectrum uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Profile - {7} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RTLow, RTHigh, Profile);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = "Gets all intensity data for the specified MZ-RT area.")]
         public double[] GetArea(string FileName, double MZLow, double MZHigh, double RTLow, double RTHigh, out string ErrorMessage, bool Cache = true, bool Profile = false){
             try{
                 if (Cache && Profile) {
-                    Cache = false;
+                    throw (new DataUnavailableException("There is no profile data in cache."));
                 }
                 FileName = Path.GetFileNameWithoutExtension(FileName);
                 Entry Cached = Cache ? Global.RCHCache[FileName] : Global.FileCashe[FileName];
@@ -260,15 +274,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetArea file exception; File not found {0}",FileName);;
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetArea uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Profile - {7}, Cache - {8} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, RTLow, RTHigh, Profile, Cache );
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetArea");
+                } else {
+                    ErrorMessage = String.Format("GetArea uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Profile - {7}, Cache - {8} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RTLow, RTHigh, Profile, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = "Describe fragmentation events, which occur in requested LC-MS area.")]
@@ -290,16 +307,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetExtraSpectraInfo file exception; File not found {0}",FileName);;
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetExtraSpectraInfo uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3} ",
-                    e.Message,e.StackTrace,FileName, MZLow, MZHigh, RTLow, RTHigh);
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetFragmentationEvents");
+                } else {
+                    ErrorMessage = String.Format("GetExtraSpectraInfo uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RTLow, RTHigh);
+                    Log(ErrorMessage);
+                }
             }
-
+            return null;
         }
 
 
@@ -320,16 +339,19 @@ namespace mzAccess
                 }
             }
             catch(KeyNotFoundException){
-                ErrorMessage = String.Format("GetMassRange file exception; File not found {0}",FileName);
-                return null;
+                ErrorMessage = String.Format("GetMZRange file exception; File not found {0}",FileName);
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetMassRange uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", Cache - {3} ",
-                    e.Message,e.StackTrace,FileName, Cache);
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetMZRange");
+                } else {
+                    ErrorMessage = String.Format("GetMZRange uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", Cache - {3} ",
+                        e.Message, e.StackTrace, FileName, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = "Get full retention time range for specified file name")]
@@ -350,15 +372,18 @@ namespace mzAccess
             }
             catch(KeyNotFoundException){
                 ErrorMessage = String.Format("GetRTRange file exception; File not found {0}",FileName);
-                return null;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetRTRange uncategorized exception; Message: {0}; Stack: {1} \n "+
-                    "Parameters: FileName - \"{2}\", Cache - {3} ",
-                    e.Message,e.StackTrace,FileName, Cache);
-                Log(ErrorMessage);
-                return null;
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetRTRange");
+                } else {
+                    ErrorMessage = String.Format("GetRTRange uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", Cache - {3} ",
+                        e.Message, e.StackTrace, FileName, Cache);
+                    Log(ErrorMessage);
+                }
             }
+            return null;
         }
 
         [WebMethod(Description = "List files available with a service. Use dos-style asterisk templates")]
@@ -384,10 +409,14 @@ namespace mzAccess
                 }
                 return AvailableFiles.ToArray();
             } catch(Exception e) {
-                ErrorMessage = String.Format("GetRTRange uncategorized exception; Message: {0}; Stack: {1} \n " +
-                    "Parameters: FileMask - \"{2}\" ",
-                    e.Message, e.StackTrace, FileMask);
-                Log(ErrorMessage);
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "FileList");
+                } else {
+                    ErrorMessage = String.Format("FileList uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileMask - \"{2}\" ",
+                        e.Message, e.StackTrace, FileMask);
+                    Log(ErrorMessage);
+                }
                 return null;
             }
         }
@@ -402,9 +431,13 @@ namespace mzAccess
                 return Res;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetChromArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
-                    e.Message, e.StackTrace);
-                Log(ErrorMessage);
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetChromatogramArray");
+                } else {
+                    ErrorMessage = String.Format("GetChromatogramArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
+                        e.Message, e.StackTrace);
+                    Log(ErrorMessage);
+                }
                 return null;
             }
         }
@@ -417,9 +450,13 @@ namespace mzAccess
                 return Res;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetSpectraArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
-                    e.Message, e.StackTrace);
-                Log(ErrorMessage);
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetSpectrumArray");
+                } else {
+                    ErrorMessage = String.Format("GetSpectrumArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
+                        e.Message, e.StackTrace);
+                    Log(ErrorMessage);
+                }
                 return null;
             }
 
@@ -427,17 +464,21 @@ namespace mzAccess
 
         [WebMethod(Description = "Batch analog of GetArea function.")]
         public double[][] GetAreaArray(string[] FileNames, double[] MZLow, double[] MZHigh, double[] RTLow, double[] RTHigh, out string ErrorMessage, bool Cache = true , bool Profile = false){
-            if(Cache && Profile)
-                Cache = false;
             try{
+                if(Cache && Profile)
+                    throw (new DataUnavailableException("There is no profile data in cache."));
                 //Array family of functions implemented by RunPool function
                 double[][] Res = RunPool(FileNames, MZLow, MZHigh, RTLow, RTHigh, MSDataType.Slice, out ErrorMessage, Cache, Profile);
                 return Res;
             }
             catch(Exception e){
-                ErrorMessage = String.Format("GetSliceArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
-                    e.Message, e.StackTrace);
-                Log(ErrorMessage);
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetAreaArray");
+                } else {
+                    ErrorMessage = String.Format("GetAreaArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
+                        e.Message, e.StackTrace);
+                    Log(ErrorMessage);
+                }
                 return null;
             }
         }
@@ -496,7 +537,7 @@ namespace mzAccess
                 FileName.Length != RTLow.Length || 
                 FileName.Length != RTHigh.Length
                 ) {
-                ErrorMessage = "Argument exception: Incoming arrays are not of equal length";
+                ErrorMessage = "Argument exception: Incoming arrays for array function are not of equal length";
                 return null;
             }
 
@@ -603,10 +644,14 @@ namespace mzAccess
                 }
             }
             catch(Exception e){
-                Req.ErrorMessage = String.Format("Thread procedure uncategorized general exception; Message: {0}; Stack: {1} \n Parameters: MSData: {2}; "+
-                    " MZLow - {3}; MZHigh - {4}; RTLow - {5}; RTHigh - {6}. ",
-                    e.Message, e.StackTrace,Req.Type,Req.MZLow,Req.MZHigh,Req.RTLow,Req.RTHigh);
-                Log(Req.ErrorMessage);
+                if(ExpectedException(e)) {
+                    Req.ErrorMessage = ExceptionFormat(e, "Thread procedure");
+                } else {
+                    Req.ErrorMessage = String.Format("Thread procedure uncategorized general exception; Message: {0}; Stack: {1} \n Parameters: MSData: {2}; " +
+                        " MZLow - {3}; MZHigh - {4}; RTLow - {5}; RTHigh - {6}. ",
+                        e.Message, e.StackTrace, Req.Type, Req.MZLow, Req.MZHigh, Req.RTLow, Req.RTHigh);
+                    Log(Req.ErrorMessage);
+                }
                 Req.Res = null;
                 Req.Type = MSDataType.Failed;
             }
@@ -625,7 +670,22 @@ namespace mzAccess
                     new EventLog("Application");
                 appLog.Source = "Application";
                 appLog.WriteEntry(Message);
+                appLog.Close();
             }
+        }
+
+        private bool ExpectedException(Exception e) {
+            if (e is DataUnavailableException ||
+                e is UnsupportedFeatureException || 
+                e is RawFileException)
+                return true;
+            return false;
+        }
+
+        private string ExceptionFormat(Exception E, string FunctionName) {
+            string Name = String.Format("{0}",E.GetType());
+            Name = Name.Substring(1, Name.IndexOf("Exception"));
+            return String.Format("{0} exception in Function {1}: {2}",Name, FunctionName, E.Message);
         }
     }
 }

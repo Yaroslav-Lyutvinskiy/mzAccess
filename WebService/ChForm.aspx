@@ -20,6 +20,12 @@
         .auto-style3 {
             width: 77px;
         }
+        .auto-style4 {
+            width: 294px;
+        }
+        .auto-style5 {
+            width: 102px;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +62,12 @@
                             <td><asp:TextBox ID="TextBox3" runat="server" AutoPostBack="True" Width="100px">110.0</asp:TextBox></td>
                             <td class="auto-style1">Max MZ:</td>
                             <td><asp:TextBox ID="TextBox4" runat="server" AutoPostBack="True" Width="100px">111.0</asp:TextBox></td>
+     					</tr>
+        			</table>
+                    <table class="auto-style4">
+                        <tr style="width:auto">
+                            <td class="auto-style5">File Mask:</td>
+                            <td><asp:TextBox ID="TextBox5" runat="server" AutoPostBack="True" Width="155px"></asp:TextBox></td>
      					</tr>
         			</table>
                     <asp:CheckBoxList ID="CheckBoxList1" runat="server" AutoPostBack="True" ForeColor="Black" >

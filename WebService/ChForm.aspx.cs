@@ -36,17 +36,10 @@ namespace mzAccess {
 
         protected void Page_Load(object sender, EventArgs e) {
             //Parameters parsing
+            string FileStr = null;
             if(Request != null && !IsPostBack) {
-                string FileStr = Request["files"];
-                CheckBoxList1.Items.Clear();
-                if(FileStr != null) {
-                    string[] Files = FileStr.Split(new char[] { '|' });
-                    foreach(string F in Files) {
-                        ListItem LI = new ListItem(F);
-                        LI.Selected = true;
-                        CheckBoxList1.Items.Add(LI);
-                    }
-                }
+                FileStr = Request["files"];
+                TextBox5.Text = FileStr;
                 double MinRT = Convert.ToDouble(Request["minrt"]);
                 double MaxRT = Convert.ToDouble(Request["maxrt"]);
                 double MinMZ = Convert.ToDouble(Request["minmz"]);
@@ -55,6 +48,33 @@ namespace mzAccess {
                 TextBox2.Text = String.Format("{0:0.0##}",MaxRT);
                 TextBox3.Text = String.Format("{0:0.0####}",MinMZ);
                 TextBox4.Text = String.Format("{0:0.0####}",MaxMZ);
+            }else {
+                FileStr = TextBox5.Text;
+            }
+            if(String.IsNullOrWhiteSpace(FileStr)) {
+                return;
+            }
+            string[] Files = null;
+            string EM;
+            if (FileStr.Contains("*") || FileStr.Contains("*")) {
+                Files = Service.FileList(FileStr, out EM);
+            }else {
+                Files = FileStr.Split(new char[] { '|' });
+            }
+            bool[] Selected = new bool[Files.Length];
+            for(int i = 0 ; i < Files.Length ; i++) {
+                Selected[i] = true;
+                for ( int j = 0 ; j < CheckBoxList1.Items.Count ; j++) {
+                    if (CheckBoxList1.Items[j].Text == Files[i]) {
+                        Selected[i] = CheckBoxList1.Items[j].Selected;
+                    }
+                }
+            }
+            CheckBoxList1.Items.Clear();
+            for(int i = 0 ; i < Files.Length ; i++) {
+                ListItem LI = new ListItem(Files[i]);
+                LI.Selected = Selected[i];
+                CheckBoxList1.Items.Add(LI);
             }
             //if no parameterrs - use default (inserted at design time or in session)
             ShowChart();
@@ -72,7 +92,7 @@ namespace mzAccess {
                 string Error;
                 if(!CheckBoxList1.Items[i].Selected)
                     continue;
-                double[] ChartPoints = Service.GetChromatogram(File,MinMZ,MaxMZ,MinRT,MaxRT,false,out Error);
+                double[] ChartPoints = Service.GetChromatogram(File,MinMZ,MaxMZ,MinRT,MaxRT,true,out Error);
                 Series Seria = new Series();
                 Seria.ChartType = SeriesChartType.FastLine;
                 Seria.Color = ColorsDefault[i % 15];

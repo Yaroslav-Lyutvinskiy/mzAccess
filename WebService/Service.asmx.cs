@@ -79,6 +79,52 @@ namespace mzAccess
             return null;
         }
 
+        [WebMethod(Description = @"Gets a total intensity for the specified MZ-RT area.")]
+        public double GetTotal(string FileName, double MZLow, double MZHigh, double RTLow, double RTHigh, out string ErrorMessage, bool Cache = true){
+            try{
+                //Get access key as Filename with no path or extention
+                FileName = Path.GetFileNameWithoutExtension(FileName);
+                //Get Raw or Cache entry depending of Cache parameter
+                Entry Cached = Cache ? Global.RCHCache[FileName] : Global.FileCashe[FileName];
+                //Get IMSFile from entry 
+                IMSFile MSFile = Cached.MSFile;
+                Cached.Lock();
+                double[] Res;
+                try {
+                    //call interface function 
+                    Res = MSFile.GetTrace(MZLow,MZHigh,RTLow,RTHigh);
+                }
+                finally {
+                    //unlock entry anycase 
+                    Cached.Unlock();
+                }
+                double Ret = 0.0;
+                if (Res != null) {
+                    for (int i = 0 ; i < Res.Length ; i += 2) {
+                        Ret += Res[i + 1];
+                    }
+                }
+                ErrorMessage = null;
+                return Ret;
+            }
+            catch(KeyNotFoundException){
+                //if error then return Error message with out ErrorMessage parameter
+                ErrorMessage = String.Format("GetTotal file exception; File not found {0}",FileName);;
+            }
+            catch(Exception e){
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetTotal");
+                } else {
+                    ErrorMessage = String.Format("GetTotal uncategorized exception; Message: {0}; Stack: {1} \n " +
+                        "Parameters: FileName - \"{2}\", MZLow - {3:f5}, MZHigh - {4:f5}, RTLow - {5:f3}, RTHigh - {6:f3}, Cache - {7} ",
+                        e.Message, e.StackTrace, FileName, MZLow, MZHigh, RTLow, RTHigh, Cache);
+                    Log(ErrorMessage);
+                }
+            }
+            return 0.0;
+        }
+
+
         [WebMethod(Description = @"Gets a spectrum identified by the ScanNumber parameter")]
         //Can access both MSOnly and MSMS spectra
         public double[] GetSpectrumByScanNumber(string FileName, double MZLow, double MZHigh, int ScanNumber, out string ErrorMessage, bool Cache = false, bool Profile = false){
@@ -441,6 +487,36 @@ namespace mzAccess
                 return null;
             }
         }
+
+
+        [WebMethod(Description = "Batch analog of GetChromatogram function. Gets Retention time/Intensity pairs for particular parameter sets")]
+        public double[] GetTotalArray(string[] FileNames, double[] MZLow, double[] MZHigh, double[] RTLow, double[] RTHigh, out string ErrorMessage, bool Cache = true){
+            try{
+                //Array family of functions implemented by RunPool function
+                double[][] Res = RunPool(FileNames, MZLow, MZHigh, RTLow, RTHigh, MSDataType.Chromatogram, out ErrorMessage, Cache, false);
+                double[] Ret = new double[Res.Length];
+                for(int i = 0 ; i < Ret.Length ; i++) {
+                    Ret[i] = 0.0;
+                    if(Res[i] == null)
+                        continue;
+                    for (int j = 0 ; j < Res[i].Length ; j += 2) {
+                        Ret[i] += Res[i][j + 1];
+                    }
+                }
+                return Ret;
+            }
+            catch(Exception e){
+                if(ExpectedException(e)) {
+                    ErrorMessage = ExceptionFormat(e, "GetTotalArray");
+                } else {
+                    ErrorMessage = String.Format("GetTotalArray uncategorized general exception; Message: {0}; Stack: {1} \n ",
+                        e.Message, e.StackTrace);
+                    Log(ErrorMessage);
+                }
+                return null;
+            }
+        }
+
 
         [WebMethod(Description = "Batch analog of GetAverageSpectrum function.")]
         public double[][] GetSpectrumArray(string[] FileNames, double[] MZLow, double[] MZHigh, double[] RTLow, double[] RTHigh, out string ErrorMessage, bool Profile = false){

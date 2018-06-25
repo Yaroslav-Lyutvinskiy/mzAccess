@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="mzAccess_mzAccessService_MSDataService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx</Value>
+      <Value Profile="(Default)">http://charon.ad.cmm.se:6060/MzAccessPublictest/Service.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

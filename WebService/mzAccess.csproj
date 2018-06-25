@@ -127,10 +127,10 @@
     <Content Include="Web References\mzAccessService\FragmentationInfo.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
-    <Content Include="Web References\mzAccessService\Reference.map">
+    <None Include="Web References\mzAccessService\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
     <None Include="Web References\mzAccessService\Service.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -245,10 +245,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx">
+    <WebReferenceUrl Include="http://charon.ad.cmm.se:6060/MzAccessPublictest/Service.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\mzAccessService\</RelPath>
-      <UpdateFromURL>http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx</UpdateFromURL>
+      <UpdateFromURL>http://charon.ad.cmm.se:6060/MzAccessPublictest/Service.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

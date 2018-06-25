@@ -69,6 +69,10 @@ namespace mzAccess {
         private long StartPagePosition;
         //Last access time
         public DateTime LastUsed = DateTime.Now;
+        //Maximum MZ available from whole cache folder 
+        public double MaxMZ;
+        //Minimum MZ available from whole cache folder 
+        public double MinMZ;
 
         //constructor - loads global information on folder cache
         public DirCache(string FileName) {
@@ -92,6 +96,11 @@ namespace mzAccess {
             int PageCount = sr.ReadInt32();
             sr.BaseStream.Seek(PageCount * 8, SeekOrigin.Current);
             StartPagePosition = sr.BaseStream.Position;
+            //First mass from pages 
+            MinMZ = sr.ReadDouble();
+            //Last Mass from pages
+            sr.BaseStream.Seek(-20, SeekOrigin.End);
+            MaxMZ = sr.ReadDouble();
             sr.Close();
         }
 
@@ -137,6 +146,7 @@ namespace mzAccess {
             RCH.JoinedCache = this;
             RCH.sr = new BinaryReader(File.Open(this.FileName,FileMode.Open,FileAccess.Read,FileShare.Read),new ASCIIEncoding());
             RCH.RTs = GetRTs(FileName);
+            RCH.SetMinMaxes();
             RCH.FileName = FileName;
             return RCH;
         }
@@ -375,6 +385,13 @@ namespace mzAccess {
             }
             Points.Sort();
             return Points;
+        }
+
+        public void SetMinMaxes() {
+            MinRT = RTs.Values[0];
+            MaxRT = RTs.Values[RTs.Count - 1];
+            MinMZ = JoinedCache.MinMZ;
+            MaxMZ = JoinedCache.MaxMZ;
         }
     }
 

@@ -752,10 +752,10 @@
   <wsdl:service name="MSDataService">
     <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;h3&gt;Service provides access to mass spectrometry raw data. &lt;br/&gt; Look for detailed documentation to &lt;a href = "http://mzaccess.org/"&gt;mzAccess.org&lt;/a&gt; &lt;/h3&gt;</wsdl:documentation>
     <wsdl:port name="MSDataServiceSoap" binding="tns:MSDataServiceSoap">
-      <soap:address location="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" />
+      <soap:address location="http://charon.ad.cmm.se:6060/MzAccessPublictest/Service.asmx" />
     </wsdl:port>
     <wsdl:port name="MSDataServiceSoap12" binding="tns:MSDataServiceSoap12">
-      <soap12:address location="http://charon.ad.cmm.se:6060/DevRawFileAccess/Service.asmx" />
+      <soap12:address location="http://charon.ad.cmm.se:6060/MzAccessPublictest/Service.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

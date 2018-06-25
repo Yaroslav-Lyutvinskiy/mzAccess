@@ -23,6 +23,7 @@ using System.Linq;
 using Ionic.Zlib;
 using System.Text;
 using System.Xml;
+using System.Globalization;
 
 
 namespace mzAccess {
@@ -262,11 +263,11 @@ namespace mzAccess {
                                 break;
                             }
                         case "MS:1000501": { //Lowest mass
-                                LowestMass = Math.Min(LowestMass, Convert.ToDouble(Reader.GetAttribute("value")));
+                                LowestMass = Math.Min(LowestMass, Convert.ToDouble(Reader.GetAttribute("value"),CultureInfo.GetCultureInfo("en-US").NumberFormat));
                                 break;
                             }
                         case "MS:1000500": { //Highest mass
-                                HighestMass = Math.Max(HighestMass, Convert.ToDouble(Reader.GetAttribute("value")));
+                                HighestMass = Math.Max(HighestMass, Convert.ToDouble(Reader.GetAttribute("value"),CultureInfo.GetCultureInfo("en-US").NumberFormat));
                                 break;
                             }
                         case "MS:1000512": { //Filter string
@@ -275,17 +276,17 @@ namespace mzAccess {
                             }
                         case "MS:1000016": { //Retention Time
                                 if(Reader.GetAttribute("unitName") == "minute") {
-                                    Spectra[i].RT = Convert.ToDouble(Reader.GetAttribute("value"));
+                                    Spectra[i].RT = Convert.ToDouble(Reader.GetAttribute("value"),CultureInfo.GetCultureInfo("en-US").NumberFormat);
                                     break;
                                 }
                                 if(Reader.GetAttribute("unitName") == "second") {
-                                    Spectra[i].RT = Convert.ToDouble(Reader.GetAttribute("value"))/60.0;
+                                    Spectra[i].RT = Convert.ToDouble(Reader.GetAttribute("value"),CultureInfo.GetCultureInfo("en-US").NumberFormat)/60.0;
                                     break;
                                 }
                                 throw (new RawFileException(String.Format("Inconsistant mzML. Unknown unit \"{0}\" for retention time",Reader.GetAttribute("unitName"))));
                             }
                         case "MS:1000744": { //precusor mass
-                                Spectra[i].ParentMass = Convert.ToDouble(Reader.GetAttribute("value"));
+                                Spectra[i].ParentMass = Convert.ToDouble(Reader.GetAttribute("value"),CultureInfo.GetCultureInfo("en-US").NumberFormat);
                                 break;
                             }
                         case "MS:1000521": { //32-bit data array 

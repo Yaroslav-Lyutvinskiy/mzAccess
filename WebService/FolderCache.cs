@@ -329,12 +329,15 @@ namespace mzAccess {
 
             //Fill RTs
             for(int i = 0 ; i < Pool.Count ; i++) {
-                if(Pool[i].Points != null) {
+                if(Pool[i].Points != null && Pool[i].Points.Count>0) {
+                    //int Index = (Pool[i].RFEntry.MSFile as RCH1MSFile).RTs.IndexOfKey(Pool[i].Points[0].Scan);
                     for(int j = 0 ; j < Pool[i].Points.Count ; j++) {
-                        Pool[i].Points[j].RT = Pool[i].RFEntry.MSFile.GetRTFromScanNumber(Pool[i].Points[j].Scan);
+                        Pool[i].Points[j].RT = (Pool[i].RFEntry.MSFile as RCH1MSFile).RTs[Pool[i].Points[j].Scan];
+                        //Pool[i].Points[j].RT = (Pool[i].RFEntry.MSFile as RCH1MSFile).RTs.Values[Index + j];
                     }
                 }
             }
+
             //Format
             for(int i = 0 ; i < Pool.Count ; i++) {
                 if(Pool[i].Points == null)
